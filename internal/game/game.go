@@ -35,6 +35,7 @@ type Game struct {
 	food       Food
 	started    bool
 	gameOver   bool
+	paused     bool
 	GameImage
 }
 
@@ -66,6 +67,18 @@ func (g *Game) Update() error {
 			g.started = true
 			g.lastUpdate = time.Now()
 		}
+		return nil
+	}
+
+	if g.paused {
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			g.paused = false
+		}
+		return nil
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		g.paused = true
 		return nil
 	}
 
@@ -101,6 +114,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		return
 	}
 
+	if g.paused {
+		g.drawPaused(screen)
+		return
+	}
+
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(
 		float64(g.food.X*PixelSize),
@@ -133,6 +151,15 @@ func (g *Game) drawStartScreen(screen *ebiten.Image) {
 	ebitentext.Draw(screen, "SNAKE GAME\n\nPress Enter to start", gameFont, op)
 }
 
+func (g *Game) drawPaused(screen *ebiten.Image) {
+	op := &ebitentext.DrawOptions{}
+	op.GeoM.Translate(float64(ScreenWidth)/2, float64(ScreenHeight)/2)
+	op.PrimaryAlign = ebitentext.AlignCenter
+	op.SecondaryAlign = ebitentext.AlignCenter
+	op.LineSpacing = 16
+	ebitentext.Draw(screen, "PAUSED\n\nPress Space to resume", gameFont, op)
+}
+
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return ScreenWidth, ScreenHeight
 }
@@ -153,6 +180,7 @@ func NewGame() *Game {
 		lastUpdate: time.Now(),
 		food:       SpawnFood(),
 		started:    false,
+		paused:     false,
 		gameOver:   false,
 		GameImage: GameImage{
 			SnakeImg: snakeImg,

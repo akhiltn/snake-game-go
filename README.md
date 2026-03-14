@@ -30,6 +30,7 @@ make build
 
 - **Arrow Keys** - Move snake
 - **Enter** - Start game
+- **Space** - Pause/Resume
 - **R** - Restart after game over
 
 ## Project Structure
@@ -54,4 +55,5 @@ make build
 - Self-collision detection
 - Score tracking (food eaten)
 - Start screen
+- Pause/Resume
 - Game over screen with restart
