@@ -130,7 +130,7 @@ func (g *Game) drawStartScreen(screen *ebiten.Image) {
 	op.PrimaryAlign = ebitentext.AlignCenter
 	op.SecondaryAlign = ebitentext.AlignCenter
 	op.LineSpacing = 16
-	ebitentext.Draw(screen, "SNAKE\n\nPress Enter to start", gameFont, op)
+	ebitentext.Draw(screen, "SNAKE GAME\n\nPress Enter to start", gameFont, op)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
