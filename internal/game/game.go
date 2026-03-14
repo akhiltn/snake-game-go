@@ -1,7 +1,6 @@
 package game
 
 import (
-	"image/color"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,6 +8,7 @@ import (
 
 type GameImage struct {
 	SnakeImg *ebiten.Image
+	HeadImg  *ebiten.Image
 	FoodImg  *ebiten.Image
 }
 
@@ -79,10 +79,13 @@ func NewGame() *Game {
 	centerY := (ScreenHeight / PixelSize) / 2
 
 	snakeImg := ebiten.NewImage(PixelSize, PixelSize)
-	snakeImg.Fill(color.RGBA{0, 255, 0, 255})
+	snakeImg.Fill(snakeColor)
+
+	headImg := ebiten.NewImage(PixelSize, PixelSize)
+	headImg.Fill(headColor)
 
 	foodImg := ebiten.NewImage(PixelSize, PixelSize)
-	foodImg.Fill(color.RGBA{255, 0, 0, 255})
+	foodImg.Fill(foodColor)
 
 	return &Game{
 		snake:      NewSnake(Point{X: centerX, Y: centerY}),
@@ -94,6 +97,7 @@ func NewGame() *Game {
 		gameOver:   false,
 		GameImage: GameImage{
 			SnakeImg: snakeImg,
+			HeadImg:  headImg,
 			FoodImg:  foodImg,
 		},
 	}

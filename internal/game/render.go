@@ -1,13 +1,45 @@
 package game
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	ebitentext "github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+var (
+	lightColor = color.RGBA{235, 235, 235, 255}
+	darkColor  = color.RGBA{215, 215, 215, 255}
+)
+
+var (
+	snakeColor = color.RGBA{46, 204, 113, 255}
+	headColor  = color.RGBA{39, 174, 96, 255}
+	foodColor  = color.RGBA{231, 76, 60, 255}
+)
+
 func (g *Game) drawGame(screen *ebiten.Image) {
+	g.drawGrid(screen)
 	g.drawFood(screen)
 	g.drawSnake(screen)
+}
+
+func (g *Game) drawGrid(screen *ebiten.Image) {
+	for gx := 0; gx < ScreenWidth/PixelSize; gx++ {
+		for gy := 0; gy < ScreenHeight/PixelSize; gy++ {
+			var c color.RGBA
+			if (gx+gy)%2 == 0 {
+				c = lightColor
+			} else {
+				c = darkColor
+			}
+			for x := gx * PixelSize; x < (gx+1)*PixelSize; x++ {
+				for y := gy * PixelSize; y < (gy+1)*PixelSize; y++ {
+					screen.Set(x, y, c)
+				}
+			}
+		}
+	}
 }
 
 func (g *Game) drawFood(screen *ebiten.Image) {
@@ -20,10 +52,16 @@ func (g *Game) drawFood(screen *ebiten.Image) {
 }
 
 func (g *Game) drawSnake(screen *ebiten.Image) {
-	for _, p := range g.snake.Body() {
+	body := g.snake.Body()
+	for i := len(body) - 1; i >= 0; i-- {
+		p := body[i]
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(p.X*PixelSize), float64(p.Y*PixelSize))
-		screen.DrawImage(g.SnakeImg, op)
+		if i == len(body)-1 {
+			screen.DrawImage(g.HeadImg, op)
+		} else {
+			screen.DrawImage(g.SnakeImg, op)
+		}
 	}
 }
 
