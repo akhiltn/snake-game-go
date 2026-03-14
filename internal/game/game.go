@@ -10,15 +10,17 @@ import (
 const GameSpeed = time.Second / 6
 
 type GameImage struct {
-	SnakeImg *ebiten.Image
-	FoodImg  *ebiten.Image
+	SnakeImg    *ebiten.Image
+	FoodImg     *ebiten.Image
+	GameOverImg *ebiten.Image
 }
 
 type Game struct {
-	snake      Snake
+	snake      *Snake
 	direction  Direction
 	lastUpdate time.Time
 	food       Food
+	gameOver   bool
 	GameImage
 }
 
@@ -42,13 +44,21 @@ func (g *Game) Update() error {
 		return nil
 	}
 
-	g.HandleInput()
-	g.snake.MoveHead(g.direction)
+	if g.gameOver {
+		return nil
+	}
 
-	if g.snake[0] != Point(g.food) {
-		g.snake.MoveTail()
-	} else {
-		g.food = SpawnFood()
+	g.HandleInput()
+
+	head := g.snake.NextHead(g.direction)
+	g.gameOver = g.snake.WillEatSelf(head)
+	if !g.gameOver {
+		g.snake.MoveHead(g.direction)
+		if g.snake.Head() != Point(g.food) {
+			g.snake.MoveTail()
+		} else {
+			g.food = SpawnFood()
+		}
 	}
 
 	g.lastUpdate = time.Now()
@@ -63,7 +73,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	)
 	screen.DrawImage(g.FoodImg, op)
 
-	for _, p := range g.snake {
+	for _, p := range g.snake.Body() {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(p.X*PixelSize), float64(p.Y*PixelSize))
 		screen.DrawImage(g.SnakeImg, op)
@@ -85,10 +95,11 @@ func NewGame() *Game {
 	foodImg.Fill(color.RGBA{255, 0, 0, 255})
 
 	return &Game{
-		snake:      []Point{{X: centerX, Y: centerY}},
+		snake:      NewSnake(Point{X: centerX, Y: centerY}),
 		direction:  Right,
 		lastUpdate: time.Now(),
 		food:       SpawnFood(),
+		gameOver:   false,
 		GameImage: GameImage{
 			SnakeImg: snakeImg,
 			FoodImg:  foodImg,
