@@ -9,7 +9,7 @@ import (
 
 func main() {
 	ebiten.SetWindowSize(game.ScreenWidth, game.ScreenHeight)
-	ebiten.SetWindowTitle("Ashiiies Snake Game")
+	ebiten.SetWindowTitle("Snake Game")
 	if err := ebiten.RunGame(game.NewGame()); err != nil {
 		log.Fatal(err)
 	}

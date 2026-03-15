@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"math/rand/v2"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -78,6 +79,18 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	g.drawGame(screen)
+}
+
+func (g *Game) SpawnFood() Food {
+	for {
+		food := Food{
+			X: rand.IntN(ScreenWidth / PixelSize),
+			Y: rand.IntN(ScreenHeight / PixelSize),
+		}
+		if !g.snake.Contains(Point(food)) {
+			return food
+		}
+	}
 }
 
 func NewGame() *Game {
