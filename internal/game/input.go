@@ -8,16 +8,16 @@ import (
 )
 
 func (g *Game) HandleInput() {
-	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) && g.direction != Down {
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) && g.direction != Down {
 		g.direction = Up
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowDown) && g.direction != Up {
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) && g.direction != Up {
 		g.direction = Down
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) && g.direction != Right {
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) && g.direction != Right {
 		g.direction = Left
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) && g.direction != Left {
+	if inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) && g.direction != Left {
 		g.direction = Right
 	}
 }

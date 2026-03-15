@@ -30,11 +30,11 @@ func (g *Game) Update() error {
 		return nil
 	}
 
+	g.HandleInput()
+
 	if time.Since(g.lastUpdate) < GameSpeed {
 		return nil
 	}
-
-	g.HandleInput()
 
 	head := g.snake.NextHead(g.direction)
 	g.gameOver = g.snake.WillEatSelf(head)
