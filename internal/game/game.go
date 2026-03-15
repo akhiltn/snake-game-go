@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -20,11 +21,16 @@ type Game struct {
 	started    bool
 	gameOver   bool
 	paused     bool
+	quit       bool
 	GameImage
 }
 
 func (g *Game) Update() error {
 	g.handleStateInput()
+
+	if g.quit {
+		return errors.New("quit")
+	}
 
 	if g.gameOver || !g.started || g.paused {
 		return nil

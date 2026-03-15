@@ -23,6 +23,11 @@ func (g *Game) HandleInput() {
 }
 
 func (g *Game) handleStateInput() {
+	if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+		g.quit = true
+		return
+	}
+
 	if g.gameOver {
 		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 			*g = *NewGame()
