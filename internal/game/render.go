@@ -75,13 +75,13 @@ func (g *Game) drawCenteredText(screen *ebiten.Image, text string) {
 }
 
 func (g *Game) drawGameOver(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "GAME OVER\n\nPress R to restart")
+	g.drawCenteredText(screen, "GAME OVER\n\nPress R to restart\nPress Q to quit")
 }
 
 func (g *Game) drawStartScreen(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "SNAKE GAME\n\nPress Enter to start")
+	g.drawCenteredText(screen, "SNAKE GAME\n\nPress Enter to start\nPress Q to quit")
 }
 
 func (g *Game) drawPaused(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "PAUSED\n\nPress Space to resume")
+	g.drawCenteredText(screen, "PAUSED\n\nPress Space to resume\nPress Q to quit")
 }
