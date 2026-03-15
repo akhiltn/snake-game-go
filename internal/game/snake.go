@@ -59,3 +59,7 @@ func wrap(v, max int) int {
 func (s *Snake) WillEatSelf(next Point) bool {
 	return s.cache[next]
 }
+
+func (s *Snake) Contains(p Point) bool {
+	return s.cache[p]
+}

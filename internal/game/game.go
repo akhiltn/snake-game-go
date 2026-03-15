@@ -49,7 +49,7 @@ func (g *Game) Update() error {
 		if g.snake.Head() != Point(g.food) {
 			g.snake.MoveTail()
 		} else {
-			g.food = SpawnFood(g.snake)
+			g.food = g.SpawnFood()
 		}
 	}
 
@@ -95,11 +95,10 @@ func NewGame() *Game {
 	foodImg := ebiten.NewImage(PixelSize, PixelSize)
 	foodImg.Fill(foodColor)
 
-	return &Game{
+	g := &Game{
 		snake:      snake,
 		direction:  Right,
 		lastUpdate: time.Now(),
-		food:       SpawnFood(snake),
 		started:    false,
 		paused:     false,
 		gameOver:   false,
@@ -109,4 +108,6 @@ func NewGame() *Game {
 			FoodImg:  foodImg,
 		},
 	}
+	g.food = g.SpawnFood()
+	return g
 }
