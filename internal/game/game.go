@@ -8,12 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type GameImage struct {
-	SnakeImg *ebiten.Image
-	HeadImg  *ebiten.Image
-	FoodImg  *ebiten.Image
-}
-
 type Game struct {
 	snake      *Snake
 	direction  Direction
@@ -23,8 +17,10 @@ type Game struct {
 	gameOver   bool
 	paused     bool
 	quit       bool
-	GameImage
+	renderer   *Renderer
 }
+
+var _ ebiten.Game = (*Game)(nil)
 
 func (g *Game) Update() error {
 	g.handleStateInput()
@@ -64,21 +60,23 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	if g.gameOver {
-		g.drawGameOver(screen)
+		g.renderer.DrawGameOver(screen)
 		return
 	}
 
 	if !g.started {
-		g.drawStartScreen(screen)
+		g.renderer.DrawStartScreen(screen)
 		return
 	}
 
 	if g.paused {
-		g.drawPaused(screen)
+		g.renderer.DrawPaused(screen)
 		return
 	}
 
-	g.drawGame(screen)
+	g.renderer.DrawGrid(screen)
+	g.renderer.DrawFood(screen, g.food)
+	g.renderer.DrawSnake(screen, g.snake)
 }
 
 func (g *Game) SpawnFood() Food {
@@ -108,6 +106,8 @@ func NewGame() *Game {
 	foodImg := ebiten.NewImage(PixelSize, PixelSize)
 	foodImg.Fill(foodColor)
 
+	renderer := NewRenderer(snakeImg, headImg, foodImg)
+
 	g := &Game{
 		snake:      snake,
 		direction:  Right,
@@ -115,12 +115,9 @@ func NewGame() *Game {
 		started:    false,
 		paused:     false,
 		gameOver:   false,
-		GameImage: GameImage{
-			SnakeImg: snakeImg,
-			HeadImg:  headImg,
-			FoodImg:  foodImg,
-		},
+		renderer:   renderer,
 	}
 	g.food = g.SpawnFood()
 	return g
 }
+

@@ -30,8 +30,7 @@ func (s *Snake) NextHead(d Direction) Point {
 		head.X++
 	}
 
-	head.X = wrap(head.X, ScreenWidth/PixelSize)
-	head.Y = wrap(head.Y, ScreenHeight/PixelSize)
+	head = head.WrapToGrid(ScreenWidth/PixelSize, ScreenHeight/PixelSize)
 
 	return head
 }
@@ -50,10 +49,6 @@ func (s *Snake) MoveTail() {
 	tail := s.body[0]
 	delete(s.cache, tail)
 	s.body = s.body[1:]
-}
-
-func wrap(v, max int) int {
-	return (v + max) % max
 }
 
 func (s *Snake) WillEatSelf(next Point) bool {

@@ -18,13 +18,21 @@ var (
 	foodColor  = color.RGBA{231, 76, 60, 255}
 )
 
-func (g *Game) drawGame(screen *ebiten.Image) {
-	g.drawGrid(screen)
-	g.drawFood(screen)
-	g.drawSnake(screen)
+type Renderer struct {
+	SnakeImg *ebiten.Image
+	HeadImg  *ebiten.Image
+	FoodImg  *ebiten.Image
 }
 
-func (g *Game) drawGrid(screen *ebiten.Image) {
+func NewRenderer(snakeImg, headImg, foodImg *ebiten.Image) *Renderer {
+	return &Renderer{
+		SnakeImg: snakeImg,
+		HeadImg:  headImg,
+		FoodImg:  foodImg,
+	}
+}
+
+func (r *Renderer) DrawGrid(screen *ebiten.Image) {
 	for gx := 0; gx < ScreenWidth/PixelSize; gx++ {
 		for gy := 0; gy < ScreenHeight/PixelSize; gy++ {
 			var c color.RGBA
@@ -42,30 +50,30 @@ func (g *Game) drawGrid(screen *ebiten.Image) {
 	}
 }
 
-func (g *Game) drawFood(screen *ebiten.Image) {
+func (r *Renderer) DrawFood(screen *ebiten.Image, food Food) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(
-		float64(g.food.X*PixelSize),
-		float64(g.food.Y*PixelSize),
+		float64(food.X*PixelSize),
+		float64(food.Y*PixelSize),
 	)
-	screen.DrawImage(g.FoodImg, op)
+	screen.DrawImage(r.FoodImg, op)
 }
 
-func (g *Game) drawSnake(screen *ebiten.Image) {
-	body := g.snake.Body()
+func (r *Renderer) DrawSnake(screen *ebiten.Image, snake *Snake) {
+	body := snake.Body()
 	for i := len(body) - 1; i >= 0; i-- {
 		p := body[i]
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(p.X*PixelSize), float64(p.Y*PixelSize))
 		if i == len(body)-1 {
-			screen.DrawImage(g.HeadImg, op)
+			screen.DrawImage(r.HeadImg, op)
 		} else {
-			screen.DrawImage(g.SnakeImg, op)
+			screen.DrawImage(r.SnakeImg, op)
 		}
 	}
 }
 
-func (g *Game) drawCenteredText(screen *ebiten.Image, text string) {
+func (r *Renderer) drawCenteredText(screen *ebiten.Image, text string) {
 	op := &ebitentext.DrawOptions{}
 	op.GeoM.Translate(float64(ScreenWidth)/2, float64(ScreenHeight)/2)
 	op.PrimaryAlign = ebitentext.AlignCenter
@@ -74,14 +82,14 @@ func (g *Game) drawCenteredText(screen *ebiten.Image, text string) {
 	ebitentext.Draw(screen, text, gameFont, op)
 }
 
-func (g *Game) drawGameOver(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "GAME OVER\n\nPress R to restart\n\nPress Q to quit")
+func (r *Renderer) DrawGameOver(screen *ebiten.Image) {
+	r.drawCenteredText(screen, "GAME OVER\n\nPress R to restart\n\nPress Q to quit")
 }
 
-func (g *Game) drawStartScreen(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "SNAKE GAME\n\nPress Enter to start\n\nPress Q to quit")
+func (r *Renderer) DrawStartScreen(screen *ebiten.Image) {
+	r.drawCenteredText(screen, "SNAKE GAME\n\nPress Enter to start\n\nPress Q to quit")
 }
 
-func (g *Game) drawPaused(screen *ebiten.Image) {
-	g.drawCenteredText(screen, "PAUSED\n\nPress Space to resume\n\nPress Q to quit")
+func (r *Renderer) DrawPaused(screen *ebiten.Image) {
+	r.drawCenteredText(screen, "PAUSED\n\nPress Space to resume\n\nPress Q to quit")
 }
